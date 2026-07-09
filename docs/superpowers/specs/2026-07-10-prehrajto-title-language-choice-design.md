@@ -120,27 +120,22 @@ did not intend.
 - Rows: the **plain titles only** (no language suffix), e.g. `Temný rytíř` /
   `The Dark Knight`. Czech listed first.
 
-## Known risk / verify-first item (TV episodes)
+## TV-episode title key (verified)
 
 For movies, the Czech title lands in the `cs_title` infoproperty
 (`basemedia.py:get_infoproperties_translation`), and
-`PlayerDictionaryDictMovie.get_title(language='cs')` reads exactly that key — so
-movies are straightforward.
+`PlayerDictionaryDictMovie.get_title(language='cs')` reads exactly that key.
 
-For **episodes**, `PlayerDictionaryDictEpisode.get_tvshowtitle(language='cs')`
-reads `infoproperties.get('cs_tvshowtitle')`, but the translation system
-generates keys of the form `<iso>_<subtype>title` — i.e. **not**
-`cs_tvshowtitle`. This mismatch means the episode Czech-title path likely does
-not work as-is.
+For **episodes**, `episode.py:65` calls
+`get_infoproperties_translation(infoproperties, 'tvshow')`. With
+`subtype='tvshow'`, the generated key is `<iso>_<subtype><k>` =
+`cs_` + `tvshow` + `title` = **`cs_tvshowtitle`** — precisely the key that
+`PlayerDictionaryDictEpisode.get_tvshowtitle(language='cs')` reads
+(`dictionary.py:194`). So the episode path works through the same
+`{ask_cs_showname}` mechanism with no special-casing. `{ask_cs_title}` (episode
+title) similarly maps to `cs_title`.
 
-**Action:** Before implementing the episode path, verify (via logging on a real
-episode with `"language": true`) the exact infoproperty key that holds the
-show's Czech title. Then either:
-- map the chooser's episode "alternate" candidate to that actual key, and/or
-- add a fallback chain in `get_tvshowtitle` (`cs_tvshowtitle` → `cs_title`).
-
-If the episode key cannot be resolved cleanly, ship the **movie** case first and
-treat episodes as a follow-up, rather than guessing.
+No episode-specific code change is required beyond the shared `ask_` branch.
 
 ## Testing
 
