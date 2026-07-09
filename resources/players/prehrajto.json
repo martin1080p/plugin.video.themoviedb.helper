@@ -1,0 +1,18 @@
+{
+    "name": "Prehraj.to",
+    "plugin": "plugin.video.prehrajto",
+    "is_resolvable": "true",
+    "assert": {
+        "play_episode": ["showname", "season", "episode"],
+        "search_movie": ["title"],
+        "search_episode": ["showname", "season", "episode"]
+    },
+    "search_movie": [
+        "plugin://plugin.video.prehrajto/?action=results&query={title_url}&year={year}",
+        {"dialog": "auto"}
+    ],
+    "search_episode": [
+        "plugin://plugin.video.prehrajto/?action=results&query={showname_url}&season={season}&episode={episode}",
+        {"dialog": "auto"}
+    ]
+}
