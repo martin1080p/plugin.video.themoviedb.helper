@@ -1,0 +1,66 @@
+name: Publish to Kodi repository
+
+# Addon-agnostic: the add-on id is read from addon.xml at build time, and the
+# workflow runs only on the repo's default branch, so this file can be copied
+# verbatim into any Kodi add-on repo with no edits.
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  publish:
+    # Only publish from the default branch (main, nexus, ...) regardless of name.
+    if: github.event_name == 'workflow_dispatch' || github.ref_name == github.event.repository.default_branch
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout add-on
+        uses: actions/checkout@v4
+
+      - name: Build zip
+        id: build
+        run: |
+          set -euo pipefail
+          chmod +x package.sh
+          ./package.sh
+          id=$(tr '\n' ' ' < addon.xml \
+              | sed -n 's/.*<addon[^>]*[[:space:]]id="\([^"]*\)".*/\1/p')
+          if [ -z "$id" ]; then
+            echo "Could not read add-on id from addon.xml" >&2
+            exit 1
+          fi
+          shopt -s nullglob
+          zips=("$id"-*.zip)
+          if [ ${#zips[@]} -ne 1 ]; then
+            echo "Expected exactly one $id-*.zip in root, found: ${zips[*]:-none}" >&2
+            exit 1
+          fi
+          echo "id=$id" >> "$GITHUB_OUTPUT"
+          echo "zip=${zips[0]}" >> "$GITHUB_OUTPUT"
+          echo "Built ${zips[0]}"
+
+      - name: Checkout Kodi repository
+        uses: actions/checkout@v4
+        with:
+          repository: martin1080p/kodi-repository
+          token: ${{ secrets.KODI_REPO_TOKEN }}
+          path: kodi-repository
+
+      - name: Publish zip
+        run: |
+          set -euo pipefail
+          id="${{ steps.build.outputs.id }}"
+          zip="${{ steps.build.outputs.zip }}"
+          dest="kodi-repository/zips/$id"
+          target="$dest/$zip"
+          if [ -f "$target" ]; then
+            echo "::notice::$zip already published — bump the version in addon.xml to release an update. Nothing to do."
+            exit 0
+          fi
+          mkdir -p "$dest"
+          cp "$zip" "$target"
+          cd kodi-repository
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "zips/$id/$zip"
+          git commit -m "Publish $zip"
+          git push
