@@ -260,12 +260,20 @@ class Player:
 
     def loop(self):
 
+        from tmdbhelper.lib.player.dialog.titlechoice import PlayerCancelledError
+        try:
+            resolver_path = self.player_current.resolver.path
+        except PlayerCancelledError:
+            kodi_log('lib.player - Cancelled by user', 1)
+            self.player_current = False
+            return
+
         kodi_log([
             f'lib.player - {self.player_current.name}: Resolving...\n',
             f'{self.player_current.file} {self.player_current.mode}\n',
-            f'{self.player_current.resolver.path}'], 1)
+            f'{resolver_path}'], 1)
 
-        if not self.player_current.resolver.path:
+        if not resolver_path:
             return self.more()
 
         from tmdbhelper.lib.player.action.reupdate import PlayerReUpdateListing
