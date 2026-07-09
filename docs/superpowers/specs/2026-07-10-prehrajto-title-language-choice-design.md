@@ -117,9 +117,8 @@ did not intend.
 - Header: a localized string, e.g. "Search language" (new string id in
   `resources/language/.../strings.po`, mirroring how existing player dialogs use
   `get_localized`).
-- Rows: the plain titles. Optionally suffix a language hint, e.g.
-  `Temný rytíř` / `The Dark Knight`. Final label format confirmed during
-  implementation; plain titles are the baseline requirement.
+- Rows: the **plain titles only** (no language suffix), e.g. `Temný rytíř` /
+  `The Dark Knight`. Czech listed first.
 
 ## Known risk / verify-first item (TV episodes)
 
