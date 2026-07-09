@@ -2921,3 +2921,8 @@ msgstr ""
 msgctxt "#32025"
 msgid "Default player for episodes"
 msgstr ""
+
+#: /resources/tmdbhelper/lib/player/dialog/dictionary.py
+msgctxt "#32537"
+msgid "Choose title for search"
+msgstr ""
