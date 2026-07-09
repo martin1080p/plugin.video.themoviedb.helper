@@ -3,6 +3,7 @@ from json import dumps
 from urllib.parse import quote_plus, quote
 from jurialmunkey.parser import try_int
 from jurialmunkey.ftools import cached_property
+from tmdbhelper.lib.player.dialog.titlechoice import resolve_title_choice
 
 
 class PlayerDictionaryDict(dict):
@@ -37,6 +38,17 @@ class PlayerDictionaryDict(dict):
             self[key] = self.get_sanitised(self[key])
             return self[key]
 
+        # Ask routes: {ask_<lang>_<route>} prompts the user to choose between the
+        # default title and the <lang> translation, then caches the pick.
+        if key.startswith('ask_'):
+            with contextlib.suppress(KeyError, AttributeError, ValueError):
+                _, language, route_key = key.split('_', 2)
+                default_value = self.routes[route_key]()
+                alt_value = self.routes[route_key](language=language)
+                self[key] = resolve_title_choice(default_value, alt_value, self.title_select)
+                self[key] = self.get_sanitised(self[key])
+                return self[key]
+
         # Translation routes
         with contextlib.suppress(KeyError, AttributeError, ValueError):
             language, route_key = key.split('_', 1)
@@ -55,6 +67,11 @@ class PlayerDictionaryDict(dict):
 
     def string_format_map(self, fmt):
         return fmt.format_map(self)
+
+    def title_select(self, candidates):
+        from xbmcgui import Dialog
+        from tmdbhelper.lib.addon.plugin import get_localized
+        return Dialog().select(get_localized(32537), candidates)
 
     @cached_property
     def encoding_affixes(self):
