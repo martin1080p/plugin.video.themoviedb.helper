@@ -44,7 +44,7 @@ class PlayerDictionaryDict(dict):
             with contextlib.suppress(KeyError, AttributeError, ValueError):
                 _, language, route_key = key.split('_', 2)
                 default_value = self.routes[route_key]()
-                alt_value = self.routes[route_key](language=language)
+                alt_value = self.routes[route_key](language=language, fallback=False)
                 self[key] = resolve_title_choice(default_value, alt_value, self.title_select)
                 self[key] = self.get_sanitised(self[key])
                 return self[key]
@@ -127,8 +127,10 @@ class PlayerDictionaryDict(dict):
         name = self[f'{language}_title' if language else 'title']
         return name
 
-    def get_title(self, language=None, **kwargs):
+    def get_title(self, language=None, fallback=True, **kwargs):
         title = self.details.infoproperties.get(f'{language}_title') if language else self.details.infolabels.get('title')
+        if language and not fallback:
+            return title
         return (title or self['title']) if language else title
 
     def get_plot(self, language=None, **kwargs):
@@ -158,8 +160,10 @@ class PlayerDictionaryDictMovie(PlayerDictionaryDict):
         })
         return routes
 
-    def get_title(self, language=None, **kwargs):
+    def get_title(self, language=None, fallback=True, **kwargs):
         title = self.details.infoproperties.get(f'{language}_title') if language else self.details.infolabels.get('title')
+        if language and not fallback:
+            return title
         title = title or self.details.infolabels.get('originaltitle')
         return (title or self['title']) if language else title
 
@@ -202,13 +206,17 @@ class PlayerDictionaryDictEpisode(PlayerDictionaryDict):
         })
         return routes
 
-    def get_title(self, language=None, **kwargs):
+    def get_title(self, language=None, fallback=True, **kwargs):
         title = self.details.infoproperties.get(f'{language}_title') if language else self.details.infolabels.get('title')
+        if language and not fallback:
+            return title
         title = title or self.details.infolabels.get('originaltitle')
         return (title or self['title']) if language else title
 
-    def get_tvshowtitle(self, language=None, **kwargs):
+    def get_tvshowtitle(self, language=None, fallback=True, **kwargs):
         tvshowtitle = self.details.infoproperties.get(f'{language}_tvshowtitle') if language else self.details.infolabels.get('tvshowtitle')
+        if language and not fallback:
+            return tvshowtitle
         tvshowtitle = tvshowtitle or self.details.infoproperties.get('tvshow.originaltitle')
         return (tvshowtitle or self['tvshowtitle']) if language else tvshowtitle
 

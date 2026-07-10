@@ -18,6 +18,6 @@ def resolve_title_choice(default_value, alt_value, select_func):
 
     candidates = [alt_value, default_value]  # alternate (Czech) listed first
     index = select_func(candidates)
-    if index is None or index < 0:
+    if index is None or index < 0 or index >= len(candidates):
         raise PlayerCancelledError()
     return candidates[index]

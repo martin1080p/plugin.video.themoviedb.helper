@@ -55,3 +55,8 @@ def test_cancel_negative_index_raises():
 def test_cancel_none_raises():
     with pytest.raises(PlayerCancelledError):
         resolve_title_choice('The Dark Knight', 'Temný rytíř', lambda c: None)
+
+
+def test_cancel_out_of_range_index_raises():
+    with pytest.raises(PlayerCancelledError):
+        resolve_title_choice('The Dark Knight', 'Temný rytíř', lambda c: 2)
