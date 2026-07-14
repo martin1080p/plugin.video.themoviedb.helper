@@ -1,7 +1,7 @@
 {
     "name": "SKTorrent",
     "plugin": "plugin.video.sktorrent",
-    "priority": 200,
+    "priority": 3,
     "is_resolvable": "true",
     "language": true,
     "assert": {

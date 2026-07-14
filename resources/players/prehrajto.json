@@ -1,6 +1,7 @@
 {
     "name": "Prehraj.to",
     "plugin": "plugin.video.prehrajto",
+    "priority": 2,
     "is_resolvable": "true",
     "language": true,
     "assert": {
