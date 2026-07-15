@@ -43,7 +43,13 @@ class PlayerDictionaryDict(dict):
         if key.startswith('ask_'):
             with contextlib.suppress(KeyError, AttributeError, ValueError):
                 _, language, route_key = key.split('_', 2)
-                default_value = self.routes[route_key]()
+                # The non-alternate candidate is the original title, not the
+                # base title: TMDb localises the base title to the UI language,
+                # so with a Czech UI it would equal the Czech translation and
+                # the choice would silently collapse. The original title is
+                # language-independent, so the prompt is always original vs. the
+                # <language> translation.
+                default_value = self.routes['originaltitle']() or self.routes[route_key]()
                 alt_value = self.routes[route_key](language=language, fallback=False)
                 self[key] = resolve_title_choice(default_value, alt_value, self.title_select)
                 self[key] = self.get_sanitised(self[key])
