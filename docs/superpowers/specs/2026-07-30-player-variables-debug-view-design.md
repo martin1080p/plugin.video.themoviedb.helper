@@ -71,8 +71,10 @@ Rejected alternatives:
   `PlayerItemBasic.is_valid`)
 - `is_debug = True` — the marker the dialog layer keys off
 - `name = get_localized(32538)`
-- `plugin_name = 'plugin.video.themoviedb.helper'` — picks up the TMDbHelper
-  icon and groups by name in combined mode, matching `PlayerItemClearDefault`
+- `plugin_name = 'plugin.video.themoviedb.helper'` — groups by name in
+  combined mode, matching `PlayerItemClearDefault`; `plugin_icon` is left at
+  the `PlayerItemBasic` default of `''`, so the row falls back to the generic
+  `kodi.png` icon rather than a TMDbHelper-specific one
 
 `PlayerDebugVariables(itemdict)` — the view. Owns the translation rebuild, the
 row builder and the tester loop.

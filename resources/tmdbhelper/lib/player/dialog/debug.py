@@ -3,18 +3,33 @@ from jurialmunkey.ftools import cached_property
 
 
 # Translation infoproperties are written per available TMDb translation as
-# <lang>_<field> and <lang>-<COUNTRY>_<field> — see
-# items/database/itemmeta_factories/concrete_classes/basemedia.py
-REGEX_TRANSLATION_KEY = re.compile(r'^([a-z]{2}(?:-[A-Z]{2})?)_(title|tvshowtitle|plot|tagline)$')
+# <lang>_<subtype><field> and <lang>-<COUNTRY>_<subtype><field> — see
+# get_infoproperties_translation() in
+# items/database/itemmeta_factories/concrete_classes/basemedia.py, called with
+# subtype in (None, 'tvshow', 'season') by concrete_classes/episode.py.
+REGEX_TRANSLATION_KEY = re.compile(
+    r'^([a-z]{2}(?:-[A-Z]{2})?)_((?:tvshow|season)?(?:title|plot|tagline))$'
+)
 
 ROW_WIDTH = 26
 
 
 def format_result(itemdict, text):
-    """ Resolve a format string against itemdict, returning error text rather than raising """
+    """ Resolve a format string against itemdict, returning error text rather than raising.
+
+    Must never raise: this feeds the interactive format-string tester, and letting anything
+    escape would propagate out through run_tester -> run -> resolve_selection -> select() ->
+    Player.get_player() and abort the whole play flow. In particular {ask_<lang>_<route>}
+    placeholders raise PlayerCancelledError when the user cancels the choice dialog - that is
+    a documented happy path (see the design spec), not a format error, so it is caught
+    explicitly and reported as a cancellation rather than an exception trace.
+    """
+    from tmdbhelper.lib.player.dialog.titlechoice import PlayerCancelledError
     try:
         return itemdict.string_format_map(text)
-    except (KeyError, IndexError, ValueError, TypeError, AttributeError) as exc:
+    except PlayerCancelledError:
+        return 'Cancelled: the ask dialog was dismissed without a choice'
+    except Exception as exc:  # noqa: BLE001 - fail-safe: this tester must never raise
         return f'{exc.__class__.__name__}: {exc}'
 
 
@@ -105,7 +120,8 @@ class PlayerDebugVariables:
 
     """ Shows the debug report for an item then loops a format-string tester """
 
-    header = 'TMDbHelper player variables'
+    header_text = 'TMDbHelper player variables'
+    header_fallback_note = '(translations unavailable - rebuild failed)'
     tester_header = 'Test a format string'
 
     def __init__(self, itemdict):
@@ -123,8 +139,20 @@ class PlayerDebugVariables:
     @cached_property
     def dictionary(self):
         """ Prefer a translation-forced rebuild so {<lang>_title} resolves even when
-        no enabled player sets "language": true. Falls back to the dialog's own dictionary. """
-        return self.get_translated_dictionary() or self.itemdict
+        no enabled player sets "language": true. Falls back to the dialog's own dictionary,
+        recording the fallback so `header` can surface it to the developer. """
+        translated = self.get_translated_dictionary()
+        self.translation_rebuild_failed = translated is None
+        return translated or self.itemdict
+
+    @cached_property
+    def header(self):
+        """ The textviewer header. Forces the translation rebuild (via `dictionary`) so a
+        failed rebuild is never silently indistinguishable from "no translations exist". """
+        self.dictionary
+        if getattr(self, 'translation_rebuild_failed', False):
+            return f'{self.header_text} {self.header_fallback_note}'
+        return self.header_text
 
     def get_translated_dictionary(self):
         from tmdbhelper.lib.player.dialog.details import PlayerDetails
