@@ -38,5 +38,6 @@ class PlayerSelectCombined(PlayerSelectStandard):
                 break
 
             player = self.select_from_group(self.set_current_group(x))
+            player = self.resolve_selection(player)
 
         return player
