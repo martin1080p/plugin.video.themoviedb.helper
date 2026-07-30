@@ -2926,3 +2926,8 @@ msgstr ""
 msgctxt "#32537"
 msgid "Choose title for search"
 msgstr ""
+
+#: /resources/tmdbhelper/lib/player/dialog/item/debug.py
+msgctxt "#32538"
+msgid "Debug variables"
+msgstr ""

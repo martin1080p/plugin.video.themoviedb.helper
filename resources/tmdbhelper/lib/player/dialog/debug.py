@@ -99,3 +99,63 @@ class PlayerDebugReport:
             self.section_encodings,
         )
         return '\n\n'.join('\n'.join(f'{i}' for i in section) for section in sections)
+
+
+class PlayerDebugVariables:
+
+    """ Shows the debug report for an item then loops a format-string tester """
+
+    header = 'TMDbHelper player variables'
+    tester_header = 'Test a format string'
+
+    def __init__(self, itemdict):
+        self.itemdict = itemdict
+
+    @cached_property
+    def dialog(self):
+        from xbmcgui import Dialog
+        return Dialog()
+
+    def busy_dialog(self):
+        from tmdbhelper.lib.addon.dialog import BusyDialog
+        return BusyDialog()
+
+    @cached_property
+    def dictionary(self):
+        """ Prefer a translation-forced rebuild so {<lang>_title} resolves even when
+        no enabled player sets "language": true. Falls back to the dialog's own dictionary. """
+        return self.get_translated_dictionary() or self.itemdict
+
+    def get_translated_dictionary(self):
+        from tmdbhelper.lib.player.dialog.details import PlayerDetails
+        from tmdbhelper.lib.player.dialog.dictionary import PlayerDictionary
+        tmdb_type = self.itemdict.tmdb_type
+        tmdb_id = self.itemdict.tmdb_id
+        season = getattr(self.itemdict, 'season', None)
+        episode = getattr(self.itemdict, 'episode', None)
+        try:
+            details = PlayerDetails(
+                tmdb_type, tmdb_id, season, episode, translation=True).details
+        except AttributeError:  # PlayerDetails.details raises if get_details() returns None
+            return
+        if not details:
+            return
+        return PlayerDictionary(tmdb_type, tmdb_id, season, episode, details)
+
+    @cached_property
+    def text(self):
+        return PlayerDebugReport(self.dictionary).text
+
+    def run(self):
+        with self.busy_dialog():
+            text = self.text
+        self.dialog.textviewer(self.header, text)
+        self.run_tester()
+
+    def run_tester(self):
+        while True:
+            entry = self.dialog.input(self.tester_header)
+            if not entry:
+                return
+            result = format_result(self.dictionary, entry)
+            self.dialog.textviewer(self.tester_header, f'{entry}\n\n{result}')

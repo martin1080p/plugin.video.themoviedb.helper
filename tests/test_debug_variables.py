@@ -133,6 +133,69 @@ def test_format_result_unknown_key_yields_underscore_not_error():
     assert format_result(itemdict, 'a{rating}b') == 'a_b'
 
 
+class _FakeDialog:
+    """Records textviewer calls and replays a scripted list of input() returns."""
+
+    def __init__(self, inputs):
+        self.inputs = list(inputs)
+        self.viewed = []
+
+    def textviewer(self, header, text):
+        self.viewed.append((header, text))
+
+    def input(self, header, **kwargs):
+        return self.inputs.pop(0) if self.inputs else ''
+
+
+def _make_view(itemdict, inputs=()):
+    """PlayerDebugVariables with the translation rebuild and Kodi Dialog stubbed out."""
+    view = _debug.PlayerDebugVariables(itemdict)
+    view.get_translated_dictionary = lambda: None   # force the fallback path
+    view.dialog = _FakeDialog(inputs)
+    view.busy_dialog = lambda: _NullContext()
+    return view
+
+
+class _NullContext:
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        return False
+
+
+def test_view_falls_back_to_passed_in_dictionary():
+    itemdict = _make_movie()
+    view = _make_view(itemdict)
+    assert view.dictionary is itemdict
+
+
+def test_view_shows_the_report_then_exits_on_empty_input():
+    itemdict = _make_movie()
+    view = _make_view(itemdict, inputs=[''])
+    view.run()
+    assert len(view.dialog.viewed) == 1
+    assert '[VARIABLES]' in view.dialog.viewed[0][1]
+
+
+def test_view_tester_loop_resolves_then_exits():
+    itemdict = _make_movie()
+    view = _make_view(itemdict, inputs=['{title_url}', ''])
+    view.run()
+    # first view is the report, second is the tester result
+    assert len(view.dialog.viewed) == 2
+    assert 'Fight%20Club' in view.dialog.viewed[1][1]
+
+
+def test_view_tester_loop_survives_a_bad_format_string():
+    itemdict = _make_movie()
+    view = _make_view(itemdict, inputs=['{', '{title}', ''])
+    view.run()
+    assert len(view.dialog.viewed) == 3
+    assert 'ValueError:' in view.dialog.viewed[1][1]
+    assert 'Fight Club' in view.dialog.viewed[2][1]
+
+
 def _run():
     failures = 0
     for name, fn in sorted(globals().items()):
