@@ -1,0 +1,9 @@
+{
+    "name"          : "[COLOR red]DEBUG variables[/COLOR]",
+    "plugin"        : "plugin.video.themoviedb.helper",
+    "priority"      : 1,
+    "language"      : true,
+    "is_resolvable" : "false",
+    "play_movie"    : "executebuiltin://Notification(TMDBH DEBUG movie,\"title={title} | year={year} | tmdb={tmdb} | imdb={imdb} | orig={originaltitle} | cs={cs_title} | en={en_title} | id={id} | tvdb={tvdb} | trakt={trakt} | slug={slug} | name={name} | clearname={clearname} | premiered={premiered} | month={month} | day={day} | title_url={title_url} | title_+={title_+} | title_escaped={title_escaped} | cs_title_url={cs_title_url} | actors={actors} | now={now}\",30000)",
+    "play_episode"  : "executebuiltin://Notification(TMDBH DEBUG episode,\"showname={showname} | S{season}E{episode} | eptitle={title} | cs_show={cs_tvshowtitle} | en_show={en_tvshowtitle} | orig={originaltitle} | showyear={showyear} | showpremiered={showpremiered} | firstaired={firstaired} | imdb={imdb} | tvdb={tvdb} | trakt={trakt} | slug={slug} | epid={epid} | eptmdb={eptmdb} | epimdb={epimdb} | eptvdb={eptvdb} | eptrakt={eptrakt} | epslug={epslug} | id={id} | tmdb={tmdb} | name={name} | tvshowtitle={tvshowtitle} | clearname={clearname} | showname_url={showname_url} | showname_+={showname_+} | season02={season:02d} | episode02={episode:02d} | now={now}\",30000)"
+}
