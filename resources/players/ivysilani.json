@@ -14,6 +14,6 @@
           "plugin://plugin.video.ivysilani.cz/?action=program_search&query={cs_title_url}&label=TMDbHelper&page=1", {"dialog": "auto"}
       ],
       "search_episode": [
-          "plugin://plugin.video.ivysilani.cz/?action=program_search&query={title}&label=TMDbHelper&page=1", {"dialog": "auto"}
+          "plugin://plugin.video.ivysilani.cz/?action=program_search&query={cs_title_url}&label=TMDbHelper&page=1", {"dialog": "auto"}
       ]
   }
