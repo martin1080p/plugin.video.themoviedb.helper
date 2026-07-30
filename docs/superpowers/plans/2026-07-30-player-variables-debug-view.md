@@ -310,7 +310,7 @@ class PlayerDebugReport:
 - [ ] **Step 4: Run test to verify it passes**
 
 Run: `python3 tests/test_debug_variables.py`
-Expected: PASS for all 12 tests, exit 0.
+Expected: PASS for all 11 tests, exit 0.
 
 Two expectations in that test were verified against the real classes before this plan was written: `sorted()` gives `['cs-CZ_title', 'cs_tagline', 'cs_title']` because `-` (0x2D) sorts before `_` (0x5F); and `tagline` is genuinely absent from `PlayerDictionaryDictMovie.routes` (as is `tvshowtitle`), which is what makes the "no matching route" annotation fire on `cs_tagline` and not on `cs_title`.
 
@@ -415,7 +415,7 @@ def test_view_tester_loop_survives_a_bad_format_string():
 - [ ] **Step 2: Run test to verify it fails**
 
 Run: `python3 tests/test_debug_variables.py`
-Expected: the four new tests FAIL with `AttributeError: module '_debug_under_test' has no attribute 'PlayerDebugVariables'`. The 12 from Task 1 still PASS.
+Expected: the four new tests FAIL with `AttributeError: module '_debug_under_test' has no attribute 'PlayerDebugVariables'`. The 11 from Task 1 still PASS.
 
 - [ ] **Step 3: Write the row class**
 
@@ -521,7 +521,7 @@ msgstr ""
 - [ ] **Step 6: Run tests to verify they pass**
 
 Run: `python3 tests/test_debug_variables.py`
-Expected: 16 PASS, exit 0.
+Expected: 15 PASS, exit 0.
 
 - [ ] **Step 7: Verify the .po file is still well-formed**
 
