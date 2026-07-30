@@ -599,7 +599,14 @@ def _load_standard_module():
     sys.modules['tmdbhelper.lib.addon.plugin'] = plugin
 
     listitem = types.ModuleType('tmdbhelper.lib.player.dialog.listitem')
-    listitem.PlayerListItem = object
+
+    class _FakeListItem:
+        """Minimal stand-in: real PlayerListItem(item, x) exposes .uid and .posx."""
+        def __init__(self, item, x):
+            self.item = item
+            self.posx = x
+            self.uid = getattr(item, 'uid', x)
+    listitem.PlayerListItem = _FakeListItem
     sys.modules['tmdbhelper.lib.player.dialog.listitem'] = listitem
 
     item_debug = types.ModuleType('tmdbhelper.lib.player.dialog.item.debug')
