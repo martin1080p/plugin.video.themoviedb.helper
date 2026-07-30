@@ -11,12 +11,9 @@
           "search_episode": ["showname", "title"]
       },
       "search_movie": [
-          "plugin://plugin.video.ivysilani.cz/?action=program_search&query={cs_title_url}&label=TMDbHelper&page=1",
-          {"strict": "true", "dialog": "auto", "label": "(?i).*{cs_title}.*"}
+          "plugin://plugin.video.ivysilani.cz/?action=program_search&query={cs_title_url}&label=TMDbHelper&page=1", {"dialog": "auto"}
       ],
       "search_episode": [
-          "plugin://plugin.video.ivysilani.cz/?action=program_search&query={cs_showname_url}%20{cs_title_url}&label=TMDbHelper&page=1",
-          {"return": "true", "strict": "true", "dialog": "auto", "label": "(?i).*{cs_showname}.*"},
-          {"strict": "true", "dialog": "auto", "label": "(?i).*{cs_title}.*"}
+          "plugin://plugin.video.ivysilani.cz/?action=program_search&query={cs_showname_url}%20{cs_title_url}&label=TMDbHelper&page=1", {"dialog": "auto"}
       ]
   }
