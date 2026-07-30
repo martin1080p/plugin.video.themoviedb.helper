@@ -1,0 +1,101 @@
+import re
+from jurialmunkey.ftools import cached_property
+
+
+# Translation infoproperties are written per available TMDb translation as
+# <lang>_<field> and <lang>-<COUNTRY>_<field> — see
+# items/database/itemmeta_factories/concrete_classes/basemedia.py
+REGEX_TRANSLATION_KEY = re.compile(r'^([a-z]{2}(?:-[A-Z]{2})?)_(title|tvshowtitle|plot|tagline)$')
+
+ROW_WIDTH = 26
+
+
+def format_result(itemdict, text):
+    """ Resolve a format string against itemdict, returning error text rather than raising """
+    try:
+        return itemdict.string_format_map(text)
+    except (KeyError, IndexError, ValueError, TypeError, AttributeError) as exc:
+        return f'{exc.__class__.__name__}: {exc}'
+
+
+class PlayerDebugReport:
+
+    """ Builds the debug text for an item. Contains no Kodi calls so that it is unit-testable. """
+
+    def __init__(self, itemdict):
+        self.itemdict = itemdict
+
+    @cached_property
+    def details(self):
+        return self.itemdict.details
+
+    @cached_property
+    def title_route(self):
+        """ Episodes demonstrate encodings on the show name since that is what players search with """
+        return 'showname' if 'showname' in self.itemdict.routes else 'title'
+
+    @staticmethod
+    def get_value(value):
+        if value is None:
+            return '<None>'
+        if value == '':
+            return '<empty>'
+        return value
+
+    def get_row(self, name, value):
+        return f'{name:<{ROW_WIDTH}}{self.get_value(value)}'
+
+    @property
+    def section_item(self):
+        yield '[ITEM]'
+        yield self.get_row('tmdb_type', self.itemdict.tmdb_type)
+        yield self.get_row('tmdb_id', self.itemdict.tmdb_id)
+        yield self.get_row('season', getattr(self.itemdict, 'season', None))
+        yield self.get_row('episode', getattr(self.itemdict, 'episode', None))
+
+    @property
+    def section_variables(self):
+        yield '[VARIABLES]'
+        for key in self.itemdict.routes:
+            yield self.get_row(key, self.itemdict[key])
+
+    @cached_property
+    def translation_keys(self):
+        """ [(infoproperty_key, field), ...] for every language-prefixed property on this item """
+        return sorted(
+            (key, match.group(2))
+            for key, match in (
+                (key, REGEX_TRANSLATION_KEY.match(key))
+                for key in self.details.infoproperties
+            )
+            if match
+        )
+
+    @property
+    def section_translations(self):
+        yield '[TRANSLATIONS AVAILABLE]'
+        if not self.translation_keys:
+            yield 'none cached for this item'
+            return
+        for key, field in self.translation_keys:
+            value = self.get_value(self.details.infoproperties[key])
+            if field not in self.itemdict.routes:
+                value = f'{value}   <- no matching route, {{{key}}} resolves to _'
+            yield self.get_row(f'{{{key}}}', value)
+
+    @property
+    def section_encodings(self):
+        yield f'[ENCODING SUFFIXES on {{{self.title_route}}}]'
+        for suffix in self.itemdict.encoding_methods:
+            key = f'{self.title_route}{suffix}'
+            yield self.get_row(f'{{{key}}}', self.itemdict[key])
+
+    @cached_property
+    def text(self):
+        sections = (
+            self.section_item,
+            self.section_variables,
+            self.section_translations,
+            self.section_encodings,
+        )
+        return '\n\n'.join('\n'.join(f'{i}' for i in section) for section in sections)
