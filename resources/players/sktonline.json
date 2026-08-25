@@ -1,0 +1,19 @@
+{
+    "name": "SkTonline",
+    "plugin": "plugin.video.sktonline",
+    "priority": 210,
+    "is_resolvable": "true",
+    "language": true,
+    "assert": {
+        "search_movie":   ["title"],
+        "search_episode": ["showname", "season", "episode"]
+    },
+    "search_movie": [
+        "plugin://plugin.video.sktonline/?query={ask_cs_title_url}",
+        {"dialog": "auto"}
+    ],
+    "search_episode": [
+        "plugin://plugin.video.sktonline/?query={ask_cs_showname_url}",
+        {"dialog": "auto"}
+    ]
+}
