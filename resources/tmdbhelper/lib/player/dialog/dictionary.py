@@ -112,7 +112,7 @@ class PlayerDictionaryDict(dict):
     def title_select(self, candidates):
         from xbmcgui import Dialog
         from tmdbhelper.lib.addon.plugin import get_localized
-        return Dialog().select(get_localized(32537), candidates)
+        return Dialog().select(get_localized(32601), candidates)
 
     @cached_property
     def encoding_affixes(self):

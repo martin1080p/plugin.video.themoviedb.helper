@@ -36,7 +36,14 @@ class PlayerMeta:
 
     @cached_property
     def meta(self):
-        return loads(self.data) or {}
+        # A single malformed file must not take down the whole player list, so it
+        # degrades to an empty meta: no 'plugin' key means it fails is_enabled.
+        try:
+            return loads(self.data) or {}
+        except ValueError as exc:
+            from tmdbhelper.lib.addon.logger import kodi_log
+            kodi_log(f'Player {self.filenameandpath} is not valid JSON and was skipped: {exc}', 2)
+            return {}
 
     @cached_property
     def plugins(self):

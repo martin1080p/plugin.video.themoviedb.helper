@@ -11,4 +11,4 @@ class PlayerItemDebugVariables(PlayerItemBasic):
 
     @cached_property
     def name(self):
-        return f'[COLOR red]{get_localized(32538)}[/COLOR]'
+        return f'[COLOR red]{get_localized(32602)}[/COLOR]'
