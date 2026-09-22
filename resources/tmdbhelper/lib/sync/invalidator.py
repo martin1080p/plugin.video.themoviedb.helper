@@ -4,7 +4,7 @@ from jurialmunkey.ftools import cached_property
 from tmdbhelper.lib.addon.dialog import ProgressDialog
 from tmdbhelper.lib.items.database.database import ItemDetailsDatabase
 from tmdbhelper.lib.addon.plugin import get_localized
-from tmdbhelper.lib.api.trakt.sync.datatype import (
+from tmdbhelper.lib.sync.synctype import (
     SyncWatched,
     SyncPlayback,
     SyncNextEpisodes,
@@ -88,7 +88,7 @@ class SyncInvalidatorAll:
     def name(self):
         return get_localized(self.localized_id)
 
-    data = (
+    factories = (
         SyncWatched, SyncPlayback, SyncNextEpisodes, SyncAllNextEpisodes,
         SyncCollection, SyncWatchlist, SyncFavorites, SyncRatings,
         SyncHiddenProgressWatched, SyncHiddenProgressCollected,
@@ -101,8 +101,9 @@ class SyncInvalidatorAll:
         return TraktAPI()
 
     @cached_property
-    def trakt_syncdata(self):
-        return self.trakt_api.trakt_syncdata
+    def syncdata(self):
+        from tmdbhelper.lib.sync.datasync import SyncDataFactory
+        return SyncDataFactory(self)
 
     @cached_property
     def progress_dialog(self):
@@ -135,7 +136,7 @@ class SyncInvalidatorAll:
 
     @cached_property
     def database_keys(self):
-        database_keys = tuple((self.data_build_keys(i) for i in self.data))
+        database_keys = tuple((self.data_build_keys(factory()) for factory in self.factories))
         database_keys = tuple(itertools.chain.from_iterable(database_keys))
         return database_keys
 
@@ -149,7 +150,7 @@ class SyncInvalidatorAll:
 
     @cached_property
     def database_lactivities_ids(self):
-        database_lactivities_ids = tuple((self.data_build_lactivities_ids(i) for i in self.data))
+        database_lactivities_ids = tuple((self.data_build_lactivities_ids(factory()) for factory in self.factories))
         database_lactivities_ids = tuple(itertools.chain.from_iterable(database_lactivities_ids))
         return database_lactivities_ids
 
@@ -164,7 +165,7 @@ class SyncInvalidatorAll:
 
     def sync_type(self, sync_type):
         sync_list = tuple((k for k, v in self.sync_table.items() if k in self.sync_modes and sync_type in v))
-        self.trakt_syncdata.sync(sync_type, sync_list)
+        self.syncdata.sync(sync_type, sync_list)
 
     def sync(self):
         self.sync_type('movie')
@@ -182,32 +183,32 @@ class SyncInvalidatorAll:
 
 
 class SyncInvalidatorWatchedProgress(SyncInvalidatorAll):
-    data = (SyncWatched, SyncPlayback, SyncNextEpisodes, SyncAllNextEpisodes)
+    factories = (SyncWatched, SyncPlayback, SyncNextEpisodes, SyncAllNextEpisodes)
     localized_id = 32035
 
 
 class SyncInvalidatorCollection(SyncInvalidatorAll):
-    data = (SyncCollection, )
+    factories = (SyncCollection, )
     localized_id = 32192
 
 
 class SyncInvalidatorWatchlist(SyncInvalidatorAll):
-    data = (SyncWatchlist, )
+    factories = (SyncWatchlist, )
     localized_id = 32193
 
 
 class SyncInvalidatorFavorites(SyncInvalidatorAll):
-    data = (SyncFavorites, )
+    factories = (SyncFavorites, )
     localized_id = 1036
 
 
 class SyncInvalidatorRatings(SyncInvalidatorAll):
-    data = (SyncRatings, )
+    factories = (SyncRatings, )
     localized_id = 32028
 
 
 class SyncInvalidatorHidden(SyncInvalidatorAll):
-    data = (
+    factories = (
         SyncHiddenProgressWatched, SyncHiddenProgressCollected,
         SyncHiddenCalendar, SyncHiddenDropped,
     )

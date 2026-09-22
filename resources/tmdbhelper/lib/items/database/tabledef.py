@@ -320,8 +320,17 @@ RATINGS_COLUMNS = {
     'rottentomatoes_image': {
         'data': 'TEXT',
     },
+    'rottentomatoes_usermeter_image': {
+        'data': 'TEXT',
+    },
     'metacritic_rating': {
         'data': 'INTEGER',
+    },
+    'metacriticuser_rating': {
+        'data': 'INTEGER',
+    },
+    'metacritic_image': {
+        'data': 'TEXT',
     },
     'trakt_rating': {
         'data': 'INTEGER',
@@ -339,6 +348,15 @@ RATINGS_COLUMNS = {
         'data': 'INTEGER',
     },
     'mdblist_votes': {
+        'data': 'INTEGER',
+    },
+    'rogerebert_rating': {
+        'data': 'INTEGER',
+    },
+    'rogerebert_image': {
+        'data': 'TEXT',
+    },
+    'myanimelist_rating': {
         'data': 'INTEGER',
     },
     'awards': {
@@ -948,124 +966,124 @@ SIMPLECACHE_COLUMNS = {
     },
     'plays': {
         'data': 'INTEGER DEFAULT 0',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncWatched', ),
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncWatched', ),
         'indexed': True
     },
     'aired_episodes': {
         'data': 'INTEGER',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncWatched', ),
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncAiredEpisodes', ),
         'indexed': True
     },
     'watched_episodes': {
         'data': 'INTEGER',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncWatched', ),
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncAiredEpisodes', ),
         'indexed': True
     },
     'reset_at': {
         'data': 'TEXT',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncWatched', )
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncWatched', )
     },
     'last_watched_at': {
         'data': 'TEXT',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncWatched', ),
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncWatched', ),
         'indexed': True
     },
     'last_updated_at': {
         'data': 'TEXT',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncWatched', ),
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncWatched', ),
         'indexed': True
     },
     'rating': {
         'data': 'INTEGER',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncRatings', )
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncRatings', )
     },
     'rated_at': {
         'data': 'TEXT',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncRatings', )
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncRatings', )
     },
     'favorites_rank': {
         'data': 'INTEGER DEFAULT 0',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncFavorites', )
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncFavorites', )
     },
     'favorites_listed_at': {
         'data': 'TEXT',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncFavorites', )
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncFavorites', )
     },
     'favorites_notes': {
         'data': 'TEXT',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncFavorites', )
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncFavorites', )
     },
     'watchlist_rank': {
         'data': 'INTEGER DEFAULT 0',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncWatchlist', ),
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncWatchlist', ),
         'indexed': True
     },
     'watchlist_listed_at': {
         'data': 'TEXT',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncWatchlist', ),
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncWatchlist', ),
         'indexed': True
     },
     'watchlist_notes': {
         'data': 'TEXT',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncWatchlist', )
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncWatchlist', )
     },
     'collection_last_collected_at': {
         'data': 'TEXT',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncCollection', ),
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncCollection', ),
         'indexed': True
     },
     'collection_last_updated_at': {
         'data': 'TEXT',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncCollection', )
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncCollection', )
     },
     'playback_progress': {
         'data': 'INTEGER',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncPlayback', ),
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncPlayback', ),
         'indexed': True
     },
     'playback_paused_at': {
         'data': 'TEXT',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncPlayback', ),
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncPlayback', ),
         'indexed': True
     },
     'playback_id': {
         'data': 'INTEGER',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncPlayback', ),
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncPlayback', ),
         'indexed': True
     },
     'progress_watched_hidden_at': {
         'data': 'TEXT',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncHiddenProgressWatched', ),
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncHiddenProgressWatched', ),
         'indexed': True
     },
     'progress_collected_hidden_at': {
         'data': 'TEXT',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncHiddenProgressCollected', ),
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncHiddenProgressCollected', ),
         'indexed': True
     },
     'calendar_hidden_at': {
         'data': 'TEXT',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncHiddenCalendar', ),
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncHiddenCalendar', ),
         'indexed': True
     },
     'dropped_hidden_at': {
         'data': 'TEXT',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncHiddenDropped', ),
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncHiddenDropped', ),
         'indexed': True
     },
     'next_episode_id': {
         'data': 'TEXT',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncNextEpisodes', ),
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncNextEpisodes', ),
         'indexed': True
     },
     'next_episode_aired_at': {
         'data': 'TEXT',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncNextEpisodes', ),
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncNextEpisodes', ),
         'indexed': True
     },
     'upnext_episode_id': {
         'data': 'TEXT',
-        'sync': ('tmdbhelper.lib.api.trakt.sync.datatype', 'SyncAllNextEpisodes', ),
+        'sync': ('tmdbhelper.lib.sync.synctype', 'SyncAllNextEpisodes', ),
         'indexed': True
     },
 }

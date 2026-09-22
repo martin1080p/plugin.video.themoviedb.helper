@@ -1,19 +1,9 @@
-from tmdbhelper.lib.items.directories.base.basedir_item import BaseDirItem, BaseDirItemTraktAuthorised
+from tmdbhelper.lib.items.directories.base.basedir_item import BaseDirItem, BaseDirItemAuthorised
 from jurialmunkey.ftools import cached_property
 from tmdbhelper.lib.addon.plugin import get_localized
 
 
-class BaseDirItemTraktCollection(BaseDirItemTraktAuthorised):
-    priority = 100
-    label_localized = 32192
-    label_type = 'reversed'
-    params = {'info': 'trakt_collection'}
-    art_icon = '/resources/icons/trakt/watchlist.png'
-    types = ('movie', 'tv', 'both')
-    group = 32192
-
-
-class BaseDirItemTraktFavorites(BaseDirItemTraktAuthorised):
+class BaseDirItemTraktFavorites(BaseDirItemAuthorised):
     priority = 110
     label_type = 'reversed'
     label_localized = 1036
@@ -24,43 +14,7 @@ class BaseDirItemTraktFavorites(BaseDirItemTraktAuthorised):
     group = 1036
 
 
-class BaseDirItemTraktWatchlist(BaseDirItemTraktAuthorised):
-    priority = 120
-    label_type = 'reversed'
-    label_localized = 32193
-    types = ('movie', 'tv', 'season', 'episode', 'both', )
-    params = {'info': 'trakt_watchlist'}
-    sorting = True
-    art_icon = 'resources/icons/trakt/watchlist.png'
-    group = 32193
-
-
-class BaseDirItemTraktWatchListReleased(BaseDirItemTraktWatchlist):
-    priority = 130
-    label_type = 'reversed'
-    label_localized = 32456
-    params = {'info': 'trakt_watchlist_released'}
-    group = 32193
-
-
-class BaseDirItemTraktWatchListAnticipated(BaseDirItemTraktWatchlist):
-    priority = 140
-    label_type = 'reversed'
-    label_localized = 32457
-    params = {'info': 'trakt_watchlist_anticipated'}
-    group = 32193
-
-
-class BaseDirItemTraktHistory(BaseDirItemTraktAuthorised):
-    priority = 150
-    label_localized = 32194
-    types = ('movie', 'tv', 'episode', 'both', )
-    params = {'info': 'trakt_history'}
-    art_icon = 'resources/icons/trakt/recentlywatched.png'
-    group = 32194
-
-
-class BaseDirItemTraktMostWatched(BaseDirItemTraktAuthorised):
+class BaseDirItemTraktMostWatched(BaseDirItemAuthorised):
     priority = 160
     label_localized = 32195
     types = ('movie', 'tv', 'episode', )
@@ -69,55 +23,7 @@ class BaseDirItemTraktMostWatched(BaseDirItemTraktAuthorised):
     group = 32195
 
 
-class BaseDirItemTraktInProgress(BaseDirItemTraktAuthorised):
-    priority = 170
-    label_localized = 32196
-    types = ('movie', 'tv', )
-    params = {'info': 'trakt_inprogress'}
-    sorting = True
-    art_icon = 'resources/icons/trakt/inprogress.png'
-    group = 32196
-
-
-class BaseDirItemTraktOnDeck(BaseDirItemTraktAuthorised):
-    priority = 180
-    label_type = 'localize'
-    label_localized = 32406
-    types = ('tv', )
-    params = {'info': 'trakt_ondeck'}
-    art_icon = 'resources/icons/trakt/inprogress.png'
-    group = 32196
-
-
-class BaseDirItemTraktOnDeckUnWatchedMovie(BaseDirItemTraktAuthorised):
-    priority = 190
-    label_type = 'appended'
-    label_localized = 32196
-    types = ('movie', )
-    params = {'info': 'trakt_ondeck_unwatched'}
-    art_icon = 'resources/icons/trakt/inprogress.png'
-    group = 32196
-
-    @cached_property
-    def label_append(self):
-        return get_localized(16101)
-
-
-class BaseDirItemTraktOnDeckUnWatchedTV(BaseDirItemTraktAuthorised):
-    priority = 200
-    label_type = 'suffixed'
-    label_localized = 32406
-    types = ('tv', )
-    params = {'info': 'trakt_ondeck_unwatched'}
-    art_icon = 'resources/icons/trakt/inprogress.png'
-    group = 32196
-
-    @cached_property
-    def label_suffix(self):
-        return f'({get_localized(16101)})'
-
-
-class BaseDirItemTraktToWatch(BaseDirItemTraktAuthorised):
+class BaseDirItemTraktToWatch(BaseDirItemAuthorised):
     priority = 210
     label_type = 'reversed'
     label_localized = 32078
@@ -127,17 +33,7 @@ class BaseDirItemTraktToWatch(BaseDirItemTraktAuthorised):
     group = 32196
 
 
-class BaseDirItemTraktNextEpisodes(BaseDirItemTraktAuthorised):
-    priority = 220
-    label_type = 'localize'
-    label_localized = 32197
-    types = ('tv', )
-    params = {'info': 'trakt_nextepisodes'}
-    art_icon = 'resources/icons/trakt/inprogress.png'
-    group = 32196
-
-
-class BaseDirItemTraktDropped(BaseDirItemTraktAuthorised):
+class BaseDirItemTraktDropped(BaseDirItemAuthorised):
     priority = 230
     label_type = 'localize'
     label_localized = 32048
@@ -147,7 +43,7 @@ class BaseDirItemTraktDropped(BaseDirItemTraktAuthorised):
     group = 32196
 
 
-class BaseDirItemTraktRecommendations(BaseDirItemTraktAuthorised):
+class BaseDirItemTraktRecommendations(BaseDirItemAuthorised):
     priority = 240
     label_type = 'reversed'
     label_localized = 32198
@@ -157,7 +53,7 @@ class BaseDirItemTraktRecommendations(BaseDirItemTraktAuthorised):
     group = 32223
 
 
-class BaseDirItemTraktBecauseYouWatched(BaseDirItemTraktAuthorised):
+class BaseDirItemTraktBecauseYouWatched(BaseDirItemAuthorised):
     priority = 250
     label_localized = 32199
     types = ('movie', 'tv', )
@@ -166,7 +62,7 @@ class BaseDirItemTraktBecauseYouWatched(BaseDirItemTraktAuthorised):
     group = 32223
 
 
-class BaseDirItemTraktBecauseMostWatched(BaseDirItemTraktAuthorised):
+class BaseDirItemTraktBecauseMostWatched(BaseDirItemAuthorised):
     priority = 260
     label_localized = 32200
     types = ('movie', 'tv', )
@@ -175,7 +71,7 @@ class BaseDirItemTraktBecauseMostWatched(BaseDirItemTraktAuthorised):
     group = 32223
 
 
-class BaseDirItemTraktMyAiring(BaseDirItemTraktAuthorised):
+class BaseDirItemTraktMyAiring(BaseDirItemAuthorised):
     priority = 270
     types = ('tv', )
     params = {'info': 'trakt_myairing'}
@@ -199,7 +95,7 @@ class BaseDirItemTraktMyAiring(BaseDirItemTraktAuthorised):
         return get_localized(32202)
 
 
-class BaseDirItemTraktAiringNext(BaseDirItemTraktAuthorised):
+class BaseDirItemTraktAiringNext(BaseDirItemAuthorised):
     priority = 280
     label_type = 'localize'
     label_localized = 32459
@@ -209,7 +105,7 @@ class BaseDirItemTraktAiringNext(BaseDirItemTraktAuthorised):
     group = 32203
 
 
-class BaseDirItemTraktCalendarDir(BaseDirItemTraktAuthorised):
+class BaseDirItemTraktCalendarDir(BaseDirItemAuthorised):
     priority = 290
     types = ('tv', )
     params = {'info': 'dir_calendar_trakt'}
@@ -622,7 +518,7 @@ class BaseDirItemTraktPopularLists(BaseDirItem):
     group = 32159
 
 
-class BaseDirItemTraktLikedLists(BaseDirItemTraktAuthorised):
+class BaseDirItemTraktLikedLists(BaseDirItemAuthorised):
     priority = 630
     label_type = 'localize'
     label_localized = 32210
@@ -632,7 +528,7 @@ class BaseDirItemTraktLikedLists(BaseDirItemTraktAuthorised):
     group = 32159
 
 
-class BaseDirItemTraktMyLists(BaseDirItemTraktAuthorised):
+class BaseDirItemTraktMyLists(BaseDirItemAuthorised):
     priority = 640
     label_type = 'localize'
     label_localized = 32211
@@ -658,7 +554,7 @@ class BaseDirItemTraktAuthenticate(BaseDirItem):
     label_localized = 32010
     types = ('both', )
     params = {'info': 'dir_trakt_authenticate'}
-    art_icon = 'resources/trakt.png'
+    art_icon = 'resources/icons/trakt/trakt.png'
     group = 32010
 
     @property
